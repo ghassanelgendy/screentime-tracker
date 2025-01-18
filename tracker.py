@@ -13,6 +13,8 @@ import os
 from PIL import Image, ImageTk
 import matplotlib.pyplot as plt
 import io
+from pystray import Icon, MenuItem, Menu
+
 
 
 class ScreenTimeTrackerApp:
@@ -25,7 +27,21 @@ class ScreenTimeTrackerApp:
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
         window_width = 600
-        window_height = 500
+        window_height = 530
+        # Set up a minimize button
+
+        # Set up a minimize button
+        self.minimize_button = ttk.Button(self.root, text="Minimize", command=self.minimize_to_tray)
+        self.minimize_button.pack(pady=5)
+
+        # Prepare icon for system tray (icon.png must be in the same directory)
+        self.icon_path = os.path.join(os.path.dirname(__file__), 'icon.png')
+
+        # Create the system tray icon with a specific menu
+        self.icon = Icon("Screen Time Tracker", Image.open(self.icon_path), menu=self.create_tray_menu())
+
+        # Flag to track if the icon has been initialized
+        self.icon_initialized = False
 
         position_top = int(screen_height / 2 - window_height / 2)
         position_right = int(screen_width / 2 - window_width / 2)
@@ -48,7 +64,6 @@ class ScreenTimeTrackerApp:
 
         self.view_button = ttk.Button(self.root, text="View Last Day's Data", command=self.view_last_day_data)
         self.view_button.pack(pady=5)
-
         # Data Structures
         self.current_app = None
         self.start_time = time.time()
@@ -59,6 +74,37 @@ class ScreenTimeTrackerApp:
 
         # Start tracking in a background thread
         threading.Thread(target=self.track_screen_time, daemon=True).start()
+
+    def minimize_to_tray(self):
+        """Minimizes the window and places the icon in the system tray."""
+        if not self.icon_initialized:
+            # Start the tray icon only once
+            self.tray_thread = threading.Thread(target=self.start_tray_icon, daemon=True)
+            self.tray_thread.start()
+            self.icon_initialized = True
+
+        self.root.withdraw()  # Hide the main window
+    def start_tray_icon(self):
+        """Start the tray icon in a separate thread."""
+        self.icon.run()
+
+    def restore_window(self, icon, item):
+        """Restores the main window from the system tray."""
+        self.root.deiconify()  # Show the main window
+
+    def quit_application(self, icon, item):
+        """Closes the application completely."""
+        self.export_log()  # Export data before quitting
+        icon.stop()  # Stop the system tray icon
+        self.root.quit()  # Quit Tkinter application
+
+    def create_tray_menu(self):
+        """Creates the tray menu with options: Open to restore window, Quit to close the app."""
+        return Menu(
+            MenuItem("Open", self.restore_window),
+            MenuItem("Quit", self.quit_application)
+        )
+
 
     def get_active_window_exe(self):
         """Fetch the executable name of the currently active window."""
@@ -308,5 +354,5 @@ class ScreenTimeTrackerApp:
 if __name__ == "__main__":
     root = tk.Tk()
     app = ScreenTimeTrackerApp(root)
-    root.protocol("WM_DELETE_WINDOW", app.stop_tracking)  # Handle window close
+    root.protocol("WM_DELETE_WINDOW", app.minimize_to_tray)  # Minimize window to tray on close
     root.mainloop()
