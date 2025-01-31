@@ -2,3 +2,5 @@
 /build
 /dist
 tracker.spec
+/src/build
+/src/dist

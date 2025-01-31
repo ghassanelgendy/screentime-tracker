@@ -1,0 +1,45 @@
+Application,Start Time,End Time,Duration (seconds),App Type
+py,2025-01-30 20:00:21,2025-01-30 20:54:19,154.09,coding
+Edge: Google,2025-01-30 20:02:59,2025-01-30 20:03:02,3.0,browser
+Edge: App Usage Tracker,2025-01-30 20:00:24,2025-01-30 20:04:06,53.07,browser
+Idle Time,2025-01-30 20:03:17,2025-01-30 20:50:47,219.10999999999999,other
+Edge: New tab,2025-01-30 20:00:41,2025-01-30 20:37:35,23.02,browser
+explorer,2025-01-30 20:00:50,2025-01-30 20:54:43,314.16999999999996,other
+Code,2025-01-30 20:01:58,2025-01-30 20:34:26,562.4799999999998,other
+Spotify,2025-01-30 20:02:07,2025-01-30 20:02:45,10.01,other
+EXCEL.EXE,2025-01-30 20:53:30,2025-01-30 20:53:32,2.0,other
+Edge: Instagram,2025-01-30 20:03:02,2025-01-30 20:03:07,5.0,social media
+Edge: Facebook – log in or sign up,2025-01-30 20:03:07,2025-01-30 20:03:27,15.02,social media
+python,2025-01-30 20:03:43,2025-01-30 20:51:53,52.019999999999996,coding
+notepad,2025-01-30 20:31:51,2025-01-30 20:31:55,4.0,other
+Edge: ChatGPT,2025-01-30 20:04:22,2025-01-30 20:26:05,58.059999999999995,browser
+Edge: Just a moment...,2025-01-30 20:04:27,2025-01-30 20:04:31,4.0,browser
+Edge: DeepSeek,2025-01-30 20:04:31,2025-01-30 20:04:59,19.009999999999998,browser
+Edge: Sign in,2025-01-30 20:04:33,2025-01-30 20:04:53,9.01,browser
+Edge: Login,2025-01-30 20:05:09,2025-01-30 20:25:42,7.0,browser
+Edge: Sign in to Apple Account,2025-01-30 20:05:12,2025-01-30 20:06:34,22.009999999999998,browser
+ApplicationFrameHost,2025-01-30 20:05:48,2025-01-30 20:51:21,247.20000000000005,other
+Edge: Screen Time Tracker,2025-01-30 20:07:08,2025-01-30 20:13:35,163.15,browser
+Edge: Screen Time Tracker Insights,2025-01-30 20:14:43,2025-01-30 20:25:26,238.2,browser
+ShellExperienceHost,2025-01-30 20:15:56,2025-01-30 20:15:58,2.0,other
+Edge: ,2025-01-30 20:16:54,2025-01-30 20:39:55,16.009999999999998,browser
+Edge: login.microsoftonline.com/consumers/oauth2/v2.0/authorize?response_type=code&client_id=7de44aed-c069-4216-a99c-45957f6c4f17&redirect_uri=https%3A%2F%2Fauth.openai.com%2Fapi%2Faccounts%2Fcallback%2Fmicrosoft&scope=openid+profile+email+https%3A%2F%2Fgraph.microsoft.com%2FUser.Read+https%3A%2F%2Fgraph.microsoft.com%2FUser.Read&state=ec8b1052-2da7-4bdc-b0e2-2b2fae28a4a8&audience=7de44aed-c069-4216-a99c-45957f6c4f17&nonce=tOhsIr0aeXtdMJs7Pw8g,2025-01-30 20:25:42,2025-01-30 20:25:44,2.0,browser
+Edge: Screen Time Tracker Code,2025-01-30 20:26:47,2025-01-30 20:35:08,190.21,browser
+Edge: connect two python files,2025-01-30 20:28:59,2025-01-30 20:29:08,6.0,coding
+Edge: pwd meaning,2025-01-30 20:30:47,2025-01-30 20:30:50,3.0,browser
+Edge: pwd meaning linux,2025-01-30 20:30:50,2025-01-30 20:30:52,2.0,browser
+PowerToys.PowerAccent,2025-01-30 20:32:20,2025-01-30 20:32:23,3.0,other
+ms-teams,2025-01-30 20:32:24,2025-01-30 20:52:09,51.03,other
+Edge: Untitled – Figma,2025-01-30 20:36:50,2025-01-30 20:52:19,480.39,browser
+Edge: Untitled,2025-01-30 20:38:18,2025-01-30 20:38:22,4.0,browser
+Edge: eye svg,2025-01-30 20:37:35,2025-01-30 20:37:50,15.01,browser
+Edge: eye icon svg,2025-01-30 20:37:50,2025-01-30 20:37:59,9.01,browser
+Edge: eye control icon svg,2025-01-30 20:37:59,2025-01-30 20:38:42,27.03,browser
+"Edge: Eye Icon | Free SVG / PNG, Premium Animated GIF / APNG Customizable Icons · Loading.io",2025-01-30 20:38:23,2025-01-30 20:38:34,11.01,browser
+Edge: eye control icon svg closed,2025-01-30 20:38:42,2025-01-30 20:38:46,4.0,browser
+Edge: Closed Eye icon SVG Vector & PNG Free Download | UXWing,2025-01-30 20:38:47,2025-01-30 20:39:07,15.01,browser
+Edge: opened Eye Search Results,2025-01-30 20:39:07,2025-01-30 20:39:14,7.01,browser
+Edge: eye Search Results,2025-01-30 20:39:14,2025-01-30 20:39:24,10.01,browser
+Edge: Eye Look icon SVG Vector & PNG Free Download | UXWing,2025-01-30 20:39:26,2025-01-30 20:39:31,5.01,browser
+Obsidian,2025-01-30 20:47:40,2025-01-30 20:52:01,42.03,other
+olk,2025-01-30 20:54:34,2025-01-30 20:54:36,2.0,other
