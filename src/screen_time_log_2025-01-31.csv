@@ -1,11 +1,11 @@
 Application,Start Time,End Time,Duration (seconds),App Type
-explorer,2025-01-31 18:11:19,2025-01-31 18:19:28,56.04,other
+explorer,2025-01-31 18:11:19,2025-01-31 18:41:24,81.03999999999999,other
 pythonw,2025-01-31 18:04:28,2025-01-31 18:19:16,12.01,coding
 Edge: Screen time tracker format,2025-01-31 18:04:37,2025-01-31 18:04:39,2.0,browser
-ApplicationFrameHost,2025-01-31 18:04:32,2025-01-31 18:04:37,5.01,other
+ApplicationFrameHost,2025-01-31 18:04:32,2025-01-31 18:38:17,22.02,other
 Edge: ,2025-01-31 18:06:09,2025-01-31 18:06:12,3.0,browser
-Edge: Untitled – Figma,2025-01-31 18:04:43,2025-01-31 18:22:24,464.40999999999997,browser
-Edge: New tab,2025-01-31 18:04:47,2025-01-31 18:16:37,23.04,browser
+Edge: Untitled – Figma,2025-01-31 18:04:43,2025-01-31 18:39:08,1432.34,browser
+Edge: New tab,2025-01-31 18:04:47,2025-01-31 18:38:25,32.05,browser
 Edge: mario counter svg,2025-01-31 18:04:53,2025-01-31 18:05:18,25.03,browser
 Edge: mario question mark svg,2025-01-31 18:05:18,2025-01-31 18:05:43,25.02,browser
 Edge: Vector Transparent Editable Vintage Question Block,2025-01-31 18:05:44,2025-01-31 18:06:15,22.01,browser
@@ -19,9 +19,12 @@ Edge: Python GUI Tkinter Rounded button! Yes. Custom Tkinter module.,2025-01-31 
 Photoshop,2025-01-31 18:09:11,2025-01-31 18:17:11,187.17999999999998,creative
 Edge: tkinter-Designer guide,2025-01-31 18:10:22,2025-01-31 18:10:24,2.0,browser
 Edge: Tkinter-Designer/docs/instructions.md at master · ParthJadhav/Tkinter-Designer,2025-01-31 18:10:24,2025-01-31 18:10:33,9.01,browser
-Code,2025-01-31 18:17:33,2025-01-31 18:18:34,50.05,other
+Code,2025-01-31 18:17:33,2025-01-31 18:39:15,54.05,other
 ShellExperienceHost,2025-01-31 18:16:29,2025-01-31 18:16:31,2.0,other
 Edge: png to base64,2025-01-31 18:17:49,2025-01-31 18:17:51,2.0,browser
 Edge: Base64 Image Encoder,2025-01-31 18:17:13,2025-01-31 18:17:29,16.02,browser
 Edge: Open,2025-01-31 18:16:40,2025-01-31 18:17:13,19.01,browser
 Edge: PNG to Base64 | Image | Base64 Encode | Base64 Converter | Base64,2025-01-31 18:17:51,2025-01-31 18:17:58,6.01,browser
+Edge: Just a moment...,2025-01-31 18:38:25,2025-01-31 18:38:28,3.0,browser
+SearchApp,2025-01-31 18:39:21,2025-01-31 18:39:23,2.0,other
+GitHubDesktop,2025-01-31 18:39:29,2025-01-31 18:41:22,102.11000000000001,other
