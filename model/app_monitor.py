@@ -35,3 +35,38 @@ class AppMonitor:
                 )
                 self.last_app = current_app
             time.sleep(1)
+
+
+def test_app_monitor():
+    # Initialize the data manager and app monitor
+    data_manager = DataManager()
+    app_monitor = AppMonitor(data_manager)
+
+    # Start tracking
+    app_monitor.start_tracking()
+    print("Tracking started...")
+
+    # Simulate app switches
+    try:
+        for _ in range(5):  # Simulate 5 app switches
+            time.sleep(2)  # Wait 2 seconds between switches
+            print("Simulating app switch...")
+    except KeyboardInterrupt:
+        print("Stopping tracking...")
+        app_monitor.is_tracking = False
+
+    # Get merged sessions and switch counts
+    sessions = data_manager.get_merged_sessions()
+    switch_counts = data_manager.get_switch_counts()
+
+    # Print results
+    print("\nMerged Sessions:")
+    for session in sessions:
+        print(session)
+
+    print("\nSwitch Counts:")
+    for switch in switch_counts:
+        print(switch)
+
+if __name__ == "__main__":
+    test_app_monitor()

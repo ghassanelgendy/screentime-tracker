@@ -1,5 +1,5 @@
 # view/gui.py
-from tkinter import Tk, Canvas, Button, PhotoImage
+from tkinter import Tk, Canvas, Button, PhotoImage, Label
 from pathlib import Path
 import random
 
@@ -20,20 +20,30 @@ class Application:
             height=653,
             width=980,
             bd=0,
-            highlightthickness=0,
+            highlightthickness = 0,
             relief="ridge"
         )
         self.canvas.place(x=0, y=0)
 
         self.button_images = []
         self.images = []
+        # Add labels to display data
+        self.total_time_label = Label(self.window, text="Total Time: 0h 0m")
+        self.total_time_label.pack()
+
+        self.switch_count_label = Label(self.window, text="Switch Counts: None")
+        self.switch_count_label.pack()
 
         self.setup_canvas()
         self.create_buttons()
         self.setup_additional_buttons()
+        # Start tracking
+        self.controller.start_tracking()
 
         # Bind motivational messages to a timer
         self.update_motivational_message()
+
+        
     def relative_to_assets(self, path: str) -> Path:
         return self.assets_path / Path(path)
 
@@ -54,6 +64,21 @@ class Application:
         self.main_text = self.canvas.create_text(
             488.0, 267.0, anchor="center", text="Initial Text", fill="#D9D9D9", font=("Cairo Black", 32 * -1)
         )
+    def update_view(self, sessions, switch_counts):
+        """Update the GUI with the latest data."""
+        # Calculate total time
+        total_time = sum(session['duration'] for session in sessions)
+        total_time_str = f"{int(total_time // 3600)}h {int((total_time % 3600) // 60)}m"
+        
+        # Format switch counts
+        switch_counts_str = ", ".join(
+            f"{switch['from_app']}: {switch['switch_count']}" 
+            for switch in switch_counts
+        )
+        
+        # Update the labels
+        self.total_time_label.config(text=f"Total Time: {total_time_str}")
+        self.switch_count_label.config(text=f"Switch Counts: {switch_counts_str}")
 
     def update_motivational_message(self):
         """Update the motivational message every 5 minutes."""
