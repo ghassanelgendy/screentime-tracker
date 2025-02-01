@@ -72,32 +72,34 @@ class DataManager:
         with self._get_connection() as conn:
             df = pd.read_sql('SELECT from_app, switch_count FROM app_switches', conn)
             return df.to_dict('records')
-        
-def test_data_manager():
-    # Initialize the data manager
-    data_manager = DataManager()
+    def get_total_switch_counts(self):
+        """Get the total number of times the user switched from all apps."""
+        with self._get_connection() as conn:
+            # Use SQL SUM to get the total switch count
+            total_switches = pd.read_sql('SELECT SUM(switch_count) as total_switches FROM app_switches', conn)
+            return total_switches.iloc[0]['total_switches']
+# def test_data_manager():
+#     # Initialize the data manager
+#     data_manager = DataManager()
 
-    # Simulate app switches
-    data_manager.log_app_switch(None, "chrome", time.time())
-    time.sleep(1)
-    data_manager.log_app_switch("chrome", "code", time.time())
-    time.sleep(1)
-    data_manager.log_app_switch("code", "chrome", time.time())
-    time.sleep(1)
-    data_manager.log_app_switch("chrome", "code", time.time())
+#     # Simulate app switches
+#     data_manager.log_app_switch(None, "chrome", time.time())
+#     time.sleep(1)
+#     data_manager.log_app_switch("chrome", "code", time.time())
+#     time.sleep(1)
+#     data_manager.log_app_switch("code", "chrome", time.time())
+#     time.sleep(1)
+#     data_manager.log_app_switch("chrome", "code", time.time())
 
-    # Get merged sessions and switch counts
-    sessions = data_manager.get_merged_sessions()
-    switch_counts = data_manager.get_switch_counts()
+#     # Get merged sessions and switch counts
+#     sessions = data_manager.get_merged_sessions()
+#     switch_counts = data_manager.get_switch_counts()
 
-    # Print results
-    print("Merged Sessions:")
-    for session in sessions:
-        print(session)
+#     # Print results
+#     print("Merged Sessions:")
+#     for session in sessions:
+#         print(session)
 
-    print("\nSwitch Counts:")
-    for switch in switch_counts:
-        print(switch)
-
-if __name__ == "__main__":
-    test_data_manager()
+#     print("\nSwitch Counts:")
+#     for switch in switch_counts:
+#         print(switch)

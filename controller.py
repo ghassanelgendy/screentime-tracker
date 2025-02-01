@@ -5,9 +5,9 @@ from model.app_monitor import AppMonitor
 from model.data_manager import DataManager
 
 class Controller:
-    def __init__(self, model):
+    def __init__(self, model, view):
         self.model = model
-        
+        self.view = view
         # Initialize the AppMonitor
         self.app_monitor = AppMonitor(self.model.data_manager)
         
@@ -32,23 +32,24 @@ class Controller:
             # Fetch data from the model
             sessions = self.model.data_manager.get_merged_sessions()
             switch_counts = self.model.data_manager.get_switch_counts()
-            
+            total_switches = self.model.data_manager.get_total_switch_counts()
             # Update the view
-            self.view.update_view(sessions, switch_counts)
+            self.view.update_view(sessions, switch_counts,total_switches)
             
             # Wait for 5 seconds before updating again
-            time.sleep(5)
+            time.sleep(1)
             
             while self.is_running:
                 # Fetch data from the model
                 sessions = self.model.data_manager.get_merged_sessions()
                 switch_counts = self.model.data_manager.get_switch_counts()
-                
+                total_switches = self.model.data_manager.get_total_switch_counts()
+
                 # Update the view (this will be implemented in the View class)
                 self._update_view(sessions, switch_counts)
                 
                 # Wait for a short period before updating again
-                time.sleep(5)  # Update every 5 seconds
+                time.sleep(1)  # Update every 5 seconds
 
     def _update_view(self, sessions, switch_counts):
         """
