@@ -1,0 +1,11 @@
+@startuml
+class AnimatedChartFrame {
+    update_chart()
+        controller
+    fig
+    ax
+    canvas
+    ani
+    __init__()
+}
+@enduml

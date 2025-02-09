@@ -1,0 +1,8 @@
+@startuml
+class NotificationManager {
+    show_break_notification()
+    show_motivational_message()
+        toaster
+    __init__()
+}
+@enduml

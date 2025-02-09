@@ -69,28 +69,113 @@ class Application:
         self.main_text = self.canvas.create_text(
             488.0, 267.0, anchor="center", text="Initial Text", fill="#D9D9D9", font=("Cairo Black", 32 * -1)
         )
-    def update_view(self, sessions, switch_counts,total_switches):
-        """Update the GUI with the latest data."""
-        # Calculate total time
-        total_time = sum(session['duration'] for session in sessions)
-        total_time_str = f"{int(total_time // 3600)}h {int((total_time % 3600) // 60)}m"
-        
-        # Format switch counts
-        switch_counts_str = ", ".join(
-            f"{switch['from_app']}: {switch['switch_count']}" 
-            for switch in switch_counts
-        )
-        total_switch_count_label = total_switches
-        # Update the labels
-        self.total_time_label.config(text=f"Total Time: {total_time_str}")
-        self.switch_count_label.config(text=f"Switch Counts: {switch_counts_str}")
-        self.total_switch_count_label.config(text=f"Total Switch Counts: {total_switches}")
+    def _update_view_loop(self):
+        while self.is_running:
+            # Fetch data from the model
+            sessions = self.model.data_manager.get_merged_sessions()
+            switch_counts = self.model.data_manager.get_switch_counts()
+            total_switches = self.model.data_manager.get_total_switch_counts()
+            time_based_data = {
+                'hour': self.model.data_manager.get_time_based_data('hour'),
+                'day': self.model.data_manager.get_time_based_data('day'),
+                'week': self.model.data_manager.get_time_based_data('week')
+            }
 
-    def update_motivational_message(self):
-        """Update the motivational message every 5 minutes."""
-        message = self.controller.get_motivational_message()
-        self.canvas.itemconfig(self.main_text, text=message)
-        self.window.after(300000, self.update_motivational_message)  # 5 minutes
+            # Update the view with all data
+            self.view.update_view(
+                sessions=sessions,
+                switch_counts=switch_counts,
+                total_switches=total_switches,
+                time_based_data=time_based_data
+            )
+
+        time.sleep(0.001)  # Update every 5 seconds/
+    def update_time_based_data(self, time_based_data):
+        """
+        Update the GUI with time-based data (hourly, daily, weekly).
+        
+        Args:
+            time_based_data: Dictionary containing time-based data.
+        """
+        # # Example: Display daily usage
+        # if 'day' in time_based_data:
+        #     daily_data = time_based_data['day']
+        #     daily_usage = sum(session['duration'] for session in daily_data)
+        #     daily_usage_str = f"{int(daily_usage // 3600)}h {int((daily_usage % 3600) // 60)}m"
+        #     self.canvas.itemconfig(self.totaltime, text=daily_usage_str)
+
+        # # Example: Display hourly usage
+        # if 'hour' in time_based_data:
+        #     hourly_data = time_based_data['hour']
+        #     # Update hourly usage display (if you have a placeholder for it)
+        pass
+    def update_top_apps(self, sessions):
+        """
+        Update the GUI with the top apps based on session data.
+        
+        Args:
+            sessions: List of session data (app, duration, switch_count).
+        """
+        # Example: Display top apps
+        top_apps = sorted(sessions, key=lambda x: x['total_duration'], reverse=True)
+        for i, app_data in enumerate(top_apps[:5]):
+            app_name = app_data['app_name']
+            duration = app_data['total_duration']
+            duration_str = f"{int(duration // 60)} mins"
+            # Update canvas text elements with app_name and duration_str
+    def update_stats(self, stats):
+        """
+        Update the GUI with additional statistics.
+        
+        Args:
+            stats: Dictionary containing statistics (e.g., total switches, idle time).
+        """
+        # Example: Display total idle time
+        if 'total_idle' in stats:
+            idle_time = stats['total_idle']
+            idle_time_str = f"{int(idle_time // 3600)}h {int((idle_time % 3600) // 60)}m"
+            # Update a label or canvas text element with idle_time_str
+            pass
+
+        # Example: Display total switches
+        if 'total_switches' in stats:
+            total_switches = stats['total_switches']
+            # Update a label or canvas text element with total_switches
+            pass
+    def update_view(self, sessions=None, switch_counts=None, total_switches=None, time_based_data=None, stats=None, total_time_overday=None):
+        """ Update the GUI with the latest data. """
+        
+        # Ensure sessions is a valid list
+        if not isinstance(sessions, list):
+            sessions = []
+        # Update the label
+        self.total_time_label.config(text=f"Total Time: {total_time_overday or 'ghassan te3b wallahy'}")
+
+        # Ensure switch_counts is iterable
+        if isinstance(switch_counts, list) and all(isinstance(switch, dict) for switch in switch_counts):
+            switch_counts_str = ", ".join(
+                f"{switch.get('from_app', 'Unknown')}: {switch.get('switch_count', 0)}" 
+                for switch in switch_counts
+            )
+        else:
+            switch_counts_str = "None"
+
+        # Update labels
+        self.switch_count_label.config(text=f"Switch Counts: {switch_counts_str}")
+        self.total_switch_count_label.config(text=f"Total Switch Counts: {total_switches or 'None'}")
+
+        # Update the canvas with top apps if sessions are provided
+        if sessions:
+            self.update_top_apps(sessions)
+
+        # Update time-based data if provided
+        if time_based_data:
+            self.update_time_based_data(time_based_data)
+
+        # Update stats if provided
+        if stats:
+            self.update_stats(stats)
+
     def setup_canvas(self):
         # Rectangles
         self.canvas.create_rectangle(0.0, 38.0, 980.0, 155.0, fill="#D0D0D0", outline="")
@@ -199,6 +284,7 @@ class Application:
         image_image_1 = PhotoImage(file=self.relative_to_assets("image_1.png"))
         self.images.append(image_image_1)
         self.canvas.create_image(426.0, 97.0, image=image_image_1)
+
 
     def create_buttons(self):
         # Modify buttons to use controller methods

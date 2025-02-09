@@ -1,6 +1,8 @@
 # controller.py
-import time
+
 import threading
+import time
+from datetime import datetime, timedelta
 from model.app_monitor import AppMonitor
 from model.data_manager import DataManager
 
@@ -8,93 +10,128 @@ class Controller:
     def __init__(self, model, view):
         self.model = model
         self.view = view
-        # Initialize the AppMonitor
         self.app_monitor = AppMonitor(self.model.data_manager)
-        
-        # Flag to control the update loop
         self.is_running = False
+        self.update_interval = 5  # seconds
+        self.last_daily_update = datetime.now().date()
 
     def start_tracking(self):
-        """Start tracking app switches and updating the view."""
-        self.is_running = True
-        self.app_monitor.start_tracking()
-        
-        # Start a thread to periodically update the view
-        threading.Thread(target=self._update_view_loop, daemon=True).start()
+        """Start tracking app usage and initialize update loop"""
+        if not self.is_running:
+            self.is_running = True
+            self.app_monitor.start_tracking()
+            self._schedule_view_update()
+            self._schedule_daily_updates()
 
     def stop_tracking(self):
-        """Stop tracking app switches."""
+        """Stop all tracking activities"""
         self.is_running = False
-        self.app_monitor.is_tracking = False
-    def _update_view_loop(self):
-        """Periodically fetch data and update the view."""
-        while self.is_running:
-            # Fetch data from the model
-            sessions = self.model.data_manager.get_merged_sessions()
-            switch_counts = self.model.data_manager.get_switch_counts()
-            total_switches = self.model.data_manager.get_total_switch_counts()
-            # Update the view
-            self.view.update_view(sessions, switch_counts,total_switches)
-            
-            # Wait for 5 seconds before updating again
-            time.sleep(1)
-            
+        self.app_monitor.stop_tracking()
+
+    def _schedule_view_update(self):
+        """Schedule periodic view updates using threading"""
+        def update_loop():
             while self.is_running:
-                # Fetch data from the model
-                sessions = self.model.data_manager.get_merged_sessions()
-                switch_counts = self.model.data_manager.get_switch_counts()
-                total_switches = self.model.data_manager.get_total_switch_counts()
+                start_time = time.time()
+                self._update_view_data()
+                elapsed = time.time() - start_time
+                sleep_time = max(0, self.update_interval - elapsed)
+                time.sleep(sleep_time)
 
-                # Update the view (this will be implemented in the View class)
-                self._update_view(sessions, switch_counts)
-                
-                # Wait for a short period before updating again
-                time.sleep(1)  # Update every 5 seconds
+        threading.Thread(target=update_loop, daemon=True).start()
 
-    def _update_view(self, sessions, switch_counts):
-        """
-        Update the view with the latest data.
+    def _schedule_daily_updates(self):
+        """Handle daily maintenance tasks"""
+        def daily_update():
+            while self.is_running:
+                now = datetime.now()
+                if now.date() != self.last_daily_update:
+                    self.model.data_manager.update_daily_stats()
+                    self.last_daily_update = now.date()
+                time.sleep(3600)  # Check every hour
+
+        threading.Thread(target=daily_update, daemon=True).start()
+
+    def _update_view_data(self):
+        """Collect data and update the view"""
+        try:
+            # Get fresh data from model
+            timeframes = ['hour', 'day', 'week']
+            time_based_data = {
+                timeframe: self.model.data_manager.get_time_based_data(timeframe)
+                for timeframe in timeframes
+            }
+
+            stats = {
+                'total_switches': self.model.data_manager.get_app_switch_count(),
+                'total_idle': self.model.data_manager.get_total_idle_time('day'),
+                'daily_usage': time_based_data['day'],  # Avoid duplicate calls
+                'top_apps': self.model.data_manager.get_merged_sessions('day')
+            }
+            print(stats['total_switches'], "total_switches====================")  # Debug print
+            # Retrieve switch count data if needed
+            switch_counts = self.model.data_manager.get_total_app_switch_count()
+            print("DEBUG: top_apps data ->", stats['top_apps'])
+            # Safely extract total_duration with a default value of 0
+            total_time_seconds = self.model.data_manager.get_total_usage_today()
+            print(total_time_seconds, "total_time in seconds for all apps=============")  # Debug print
+            # Update view with new data
+            self.view.update_view(
+                sessions=stats['top_apps'],
+                switch_counts=switch_counts,  # Corrected to retrieve real switch count
+                total_switches=stats['total_switches'],
+                time_based_data=time_based_data,
+                stats=stats,
+                total_time_overday=total_time_seconds
+            )
+
+        except Exception as e:
+            print(f"Error updating view: {str(e)}")
+
+    def show_timeframe_data(self, timeframe):
+        """Handle timeframe-specific data requests"""
+        data = self.model.data_manager.get_time_based_data(timeframe)
+        self.view.display_timeframe_data(timeframe, data)
+
+    def export_data(self, timeframe='all'):
+        """Export data with time filtering support"""
+        filename = f"screentime_export_{datetime.now().strftime('%Y%m%d_%H%M')}.csv"
         
-        Args:
-            sessions (list): List of session data (app, duration, switch_count).
-            switch_counts (list): List of switch counts (from_app, switch_count).
-        """
-        # This method will be implemented in the View class
-        pass
-
-    def show_yesterday_data(self):
-        """Fetch and display yesterday's data."""
-        data = self.model.data_manager.get_yesterday_data()
-        # Update GUI with yesterday's data
-
-    def show_charts(self):
-        """Display charts."""
-        self.model.scheduler.start()
-
-    def export_data(self):
-        """Export the tracked data to a CSV file."""
-        self.model.data_manager.export_csv()
-
-    def get_motivational_message(self):
-        """Get a random motivational message."""
-        return self.model.motivational_messages.get_message("productive")
+        if timeframe == 'all':
+            data = self.model.data_manager.get_time_based_data('all')
+        else:
+            data = self.model.data_manager.get_time_based_data(timeframe)
+            
+        self.model.data_manager.export_to_csv(data, filename)
+        return filename
 
     def update_categories(self, categories):
-        """Update app categories."""
-        self.model.category_manager.update(categories)
+        """Update categories with validation"""
+        validated = self.model.category_manager.validate_categories(categories)
+        self.model.data_manager.update_categories(validated)
+        self._update_view_data()
 
     def set_idle_threshold(self, seconds):
-        """Set the idle time threshold."""
+        """Update idle detection threshold"""
         self.model.idle_detector.set_threshold(seconds)
+        self.app_monitor.update_idle_threshold(seconds)
 
-    def schedule_auto_export(self, interval_minutes):
-        """Schedule auto-export at regular intervals."""
-        self.model.scheduler.start(interval_minutes)
+    def get_motivational_message(self):
+        """Get context-aware motivational message"""
+        usage_data = self.model.data_manager.get_time_based_data('day')
+        return self.model.motivational_messages.get_message_based_on_usage(usage_data)
 
-    def show_vision(self):
-        """Display the vision or motivational message."""
-        self.model.vision.show()
+    def schedule_auto_export(self, interval_hours):
+        """Schedule automatic exports"""
+        def auto_export_task():
+            while self.is_running:
+                self.export_data()
+                time.sleep(interval_hours * 3600)
+                
+        threading.Thread(target=auto_export_task, daemon=True).start()
 
-    def show_jarvis(self):
-        """Display Jarvis-related content."""
-        self.model.jarvis.show()
+    def shutdown(self):
+        """Clean shutdown procedure"""
+        self.stop_tracking()
+        self.model.data_manager.update_daily_stats()
+        self.model.data_manager.close_connections()
